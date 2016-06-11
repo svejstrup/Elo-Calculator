@@ -13,8 +13,8 @@ public class Elo {
     private static final double K = 32;
     private static final double initialRating = 1000;
 
+    //The address of a file containing all previous results should be given as argument when running main.
     public static void main(String[] args) {
-
         ArrayList<String> matches = readFile(args[0]);
 
         for (String s : matches) {
