@@ -1,31 +1,36 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by Madss on 11-06-2016.
  */
 public class Elo {
-    private static TreeMap<String, Double> ratings = new TreeMap<>();
+    private static HashMap<String, Double> ratings = new HashMap<>();
     private static final double K = 32;
     private static final double initialRating = 1000;
 
     //The address of a file containing all previous results should be given as argument when running main.
     public static void main(String[] args) {
-        ArrayList<String> matches = readFile(args[0]);
+        int count = 1;
+        if (args.length == 0) {
+            System.out.println("Please give a file as input");
 
-        for (String s : matches) {
-            computeNewElo(s);
-        }
+        } else {
+            ArrayList<String> matches = readFile(args[0]);
 
-        for(Map.Entry<String,Double> entry : ratings.entrySet()) {
-            String key = entry.getKey();
-            double value = entry.getValue();
+            for (String s : matches) {
+                computeNewElo(s);
+            }
 
-            System.out.println(key + " => " + value);
+            for(Map.Entry<String,Double> entry : sortHasMap(ratings).entrySet()) {
+                String key = entry.getKey();
+                int value =  entry.getValue().intValue();
+
+                System.out.println(count + ": " + key + " => " + value);
+                count++;
+            }
         }
     }
 
@@ -84,5 +89,24 @@ public class Elo {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static LinkedHashMap<String, Double> sortHasMap(HashMap<String, Double> map) {
+        LinkedHashMap<String, Double> resultMap = new LinkedHashMap<>();
+
+        while (!map.isEmpty()) {
+            double largestValue = 0;
+            String largestKey = "";
+
+            for(Map.Entry<String,Double> entry : map.entrySet()) {
+                if (entry.getValue() > largestValue) {
+                    largestValue = entry.getValue();
+                    largestKey = entry.getKey();
+                }
+            }
+            resultMap.put(largestKey, largestValue);
+            map.remove(largestKey);
+        }
+        return resultMap;
     }
 }
